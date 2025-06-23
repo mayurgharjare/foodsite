@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Religious Cuisine Explorer</title>
+  <link rel="stylesheet" href="styles.css">
+
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    h1, h2, h3, h4 { color: #333; }
+    .search-bar { width: 100%; padding: 10px; margin-bottom: 20px; }
+    .category-section { margin-top: 40px; }
+    .subcategory { margin-top: 20px; }
+    .recipes { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+    .card { border: 1px solid #ccc; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    .card img { width: 100%; height: 200px; object-fit: cover; }
+    .card-content { padding: 15px; }
+    ul, ol { padding-left: 20px; }
+    .note { color: #555; font-size: 0.9em; }
+  </style>
+</head>
+<body>
+  <h1>Religious Cuisine Explorer</h1>
+  <input type="text" id="search" class="search-bar" placeholder="Search recipes..." oninput="filterRecipes()">
+
+  <div id="content"></div>
+
+  <script>
+    const recipes = {
+      Hindu: {
+        "South Indian": [
+          {
+            name: "Masala Dosa",
+            image: "dosa.jpg",
+            ingredients: ["Rice", "Urad dal", "Potatoes", "Spices"],
+            steps: ["Soak and grind rice & dal", "Ferment batter", "Prepare potato filling", "Cook dosa with filling"],
+            note: "Popular breakfast in South India, served with sambar and chutney."
+          }
+        ],
+        "Diwali Sweets": [
+          {
+            name: "Ladoo",
+            image: "ladoo.jpg",
+            ingredients: ["Gram flour", "Sugar", "Ghee"],
+            steps: ["Roast flour", "Mix with syrup", "Shape into balls"],
+            note: "Traditional sweet for Diwali celebrations."
+          }
+        ]
+      },
+      Muslim: {
+        "Eid Special": [
+          {
+            name: "Sheer Khurma",
+            image: "sheerkurma.jpg",
+            ingredients: ["Vermicelli", "Milk", "Dates", "Nuts"],
+            steps: ["Boil milk", "Add vermicelli & dates", "Garnish with nuts"],
+            note: "Delicious dessert prepared during Eid."
+          }
+        ],
+        "Hyderabadi": [
+          {
+            name: "Hyderabadi Biryani",
+            image: "bhiryani.jpg",
+            ingredients: ["Rice", "Chicken", "Spices", "Yogurt"],
+            steps: ["Marinate chicken", "Cook rice separately", "Layer and cook on dum"],
+            note: "A royal delicacy from Hyderabad."
+          }
+        ]
+      }
+    };
+
+    function createRecipeCard(dish) {
+      return `
+        <div class="card">
+          <img src="${dish.image}" alt="${dish.name}" />
+          <div class="card-content">
+            <h4>${dish.name}</h4>
+            <p class="note">${dish.note}</p>
+            <strong>Ingredients:</strong>
+            <ul>${dish.ingredients.map(i => `<li>${i}</li>`).join('')}</ul>
+            <strong>Steps:</strong>
+            <ol>${dish.steps.map(s => `<li>${s}</li>`).join('')}</ol>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderRecipes(filter = '') {
+      const container = document.getElementById('content');
+      container.innerHTML = '';
+
+      Object.entries(recipes).forEach(([religion, categories]) => {
+        let religionSection = `<div class="category-section"><h2>${religion} Recipes</h2>`;
+
+        Object.entries(categories).forEach(([subcategory, dishes]) => {
+          const filteredDishes = dishes.filter(d => d.name.toLowerCase().includes(filter.toLowerCase()));
+          if (filteredDishes.length > 0) {
+            religionSection += `<div class="subcategory">
+              <h3>${subcategory}</h3>
+              <div class="recipes">
+                ${filteredDishes.map(dish => createRecipeCard(dish)).join('')}
+              </div>
+            </div>`;
+          }
+        });
+
+        religionSection += `</div>`;
+        container.innerHTML += religionSection;
+      });
+    }
+
+    function filterRecipes() {
+      const value = document.getElementById('search').value;
+      renderRecipes(value);
+    }
+
+    window.onload = () => renderRecipes();
+  </script>
+</body>
+</html>
